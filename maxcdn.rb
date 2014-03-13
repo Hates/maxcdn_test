@@ -13,13 +13,14 @@ exit if options[:url].empty?
 datacenter = Curl::Easy.perform("http://108.161.187.32/").body_str.match(/^.+?NetDNA(.+?)</)[1].strip!
 
 options[:url].each do |url|
-  puts "Testing MaxCDN Response for: #{options[:url]}"
+  puts "Testing MaxCDN response for: #{options[:url]}"
+  result = "#{Time.now} :: #{datacenter} :: #{url} :: "
   begin
     request = Curl::Easy.http_head(url)
-    result = "#{Time.now} :: #{datacenter} :: #{url} :: #{request.response_code} :: #{request.header_str.tr("\r\n", ' ')}\n"
+    result += "#{request.response_code} :: #{request.header_str.tr("\r\n", ' ')}"
   rescue
-    result = "#{Time.now} :: #{datacenter} :: #{url} :: #{$!}\n"
+    result += "#{$!}"
   end
   puts "Result: #{result}"
-  File.open(options[:file], 'a') { |f| f.write(result) }
+  File.open(options[:file], 'a') { |f| f.write(result + "\n") }
 end
