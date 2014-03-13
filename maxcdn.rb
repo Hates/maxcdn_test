@@ -12,6 +12,7 @@ puts "Testing MaxCDN Response for: #{options[:url]}"
 
 datacenter = Curl::Easy.perform("http://108.161.187.32/").body_str.match(/^.+?NetDNA(.+?)</)[1].strip!
 request = Curl::Easy.http_head(options[:url])
-result = "#{Time.now} :: #{datacenter} :: #{request.response_code} :: #{request.header_str.tr("\r\n", ' ')}"
+result = "#{Time.now} :: #{datacenter} :: #{request.response_code} :: #{request.header_str.tr("\r\n", ' ')}\n"
+
 puts "Result: #{result}"
 File.open(options[:file], 'a') { |f| f.write(result) }
