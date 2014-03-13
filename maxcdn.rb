@@ -14,8 +14,12 @@ datacenter = Curl::Easy.perform("http://108.161.187.32/").body_str.match(/^.+?Ne
 
 options[:url].each do |url|
   puts "Testing MaxCDN Response for: #{options[:url]}"
-  request = Curl::Easy.http_head(url)
-  result = "#{Time.now} :: #{datacenter} :: #{request.response_code} :: #{request.header_str.tr("\r\n", ' ')}\n"
+  begin
+    request = Curl::Easy.http_head(url)
+    result = "#{Time.now} :: #{datacenter} :: #{url} :: #{request.response_code} :: #{request.header_str.tr("\r\n", ' ')}\n"
+  rescue
+    result = "#{Time.now} :: #{datacenter} :: #{url} :: #{$!}\n"
+  end
   puts "Result: #{result}"
   File.open(options[:file], 'a') { |f| f.write(result) }
 end
